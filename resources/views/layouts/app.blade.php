@@ -12,7 +12,7 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
         <!-- Styles -->
-        <link href="{{ mix('css/app.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ url(mix('css/app.css')) }}" rel="stylesheet" type="text/css" />
         
     </head>
     <body>
@@ -32,6 +32,6 @@
                 @yield('content')
             </div>
         </div>
-        <script src="{{ mix('js/app.js') }}"></script>
+        <script src="{{ url(mix('js/app.js')) }}"></script>
     </body>
 </html>

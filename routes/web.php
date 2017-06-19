@@ -14,5 +14,5 @@
 Route::resource('product', 'ProductController', ['only' => 'index']);
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('product');
 });
