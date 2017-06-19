@@ -1,0 +1,1 @@
+Please set a symbolic link from /public/images/ to /storage/app/images/.

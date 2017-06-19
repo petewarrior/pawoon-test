@@ -7,16 +7,86 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+$(document).ready(function() {
+    $('a[title=Modify]').click(function(event) {
+        event.preventDefault();
+        console.log('modify');
+        let hash = event.currentTarget.getAttribute('href');
+        let parts = hash.substr(2).split('=');
+        let action = parts[0];
+        let id = parts[1];
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+        modifyProduct(id);
+    });
 
-Vue.component('example', require('./components/Example.vue'));
+    $('a[title=Delete]').click(function(event) {
+        event.preventDefault();
+        let hash = event.currentTarget.getAttribute('href');
+        let parts = hash.substr(2).split('=');
+        let action = parts[0];
+        let id = parts[1];
 
-const app = new Vue({
-    el: '#app'
+        deleteProduct(id);
+    });
+
+    $('#btnAddProduct').click(function(event) {
+        modifyProduct();
+    });
+
+    var modifyProduct = function(id) {
+        if(id && id.length > 0) {
+            axios.get('/api/product/'+id)
+            .then((result) => {
+                console.log(result);
+                $('#createProductId').val(result.data.id);
+                $('#createProductName').val(result.data.name);
+                $('#createProductPrice').val(result.data.price);
+                
+                if(result.data.image && result.data.image.length > 0) {
+                    $('#createProductImagePreview').attr('src', result.data.image).show();
+                } else {
+                    $('#createProductImagePreview').hide();
+                }
+            }, (error) => {
+                console.error('ERROR: ' + error.message);
+            });
+        } else {
+            $('#createProductId').val('');
+            $('#createProductName').val('');
+            $('#createProductPrice').val('');
+            $('#createProductImage').val('');
+            $('#createProductImagePreview').hide();
+            
+        }
+        $('#createModal').modal('show');
+    };
+
+    var deleteProduct = function(id) {
+        $('#deleteModal').modal('show');
+
+        $('#confirmDelete').click(function() {
+            if(id.length > 0) {
+                axios.delete('/api/product/'+id)
+                .then((result) => {
+                    window.location.reload();
+                }, (error) => {
+                    console.error('ERROR: ' + error.message);
+                });
+            } else {
+            }
+        });
+    };
+
+    $('#createProduct').on('submit', function(event) {
+        event.preventDefault();
+
+        let data = new FormData(document.getElementById('createProduct'));
+        
+        axios.post('/api/product', data)
+        .then((result) => {
+            window.location.reload();
+        }, (error) => {
+            console.error('ERROR: ' + error.message);
+        });
+    });
 });

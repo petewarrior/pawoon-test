@@ -6,6 +6,8 @@ use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Storage;
+
 class ProductController extends Controller
 {
     /**
@@ -37,6 +39,29 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'id'    => 'numeric|nullable',
+            'name'  => 'required',
+            'price' => 'required|numeric',
+            'image' => 'image',
+        ]);
+
+        $id = $request->input('id');
+
+        if(!empty($id)) {
+            $p = Product::findOrFail($id);
+        } else {
+            $p = new Product;
+        }
+
+        $p->name = $request->input('name');
+        $p->price = $request->input('price');
+        if($request->hasFile('images')) {
+            $p->image = $request->image->store('images');
+        }
+        $p->save();
+
+        return $p;
     }
 
     /**
@@ -48,6 +73,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+        return $product;
     }
 
     /**
@@ -82,8 +108,9 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //
+        Storage::delete($product->image);
         $product->delete();
 
-        return response()->json(['result' => 'OK'], 200);
+        return response('deleted', 200);
     }
 }

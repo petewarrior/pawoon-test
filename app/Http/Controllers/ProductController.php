@@ -15,16 +15,12 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $actions = '<a href="{{ route("product.edit", ["id" => $id]) }}"><i class="fa fa-edit"></i></a>';
-
         $grid = \DataGrid::source(new Product);  //same source types of DataSet
    
         $grid->add('name','Name', true); //field name, label, sortable
         $grid->add('price','Price', true); //relation.fieldname
-        //$grid->add($actions, 'Actions', false);
-        $grid->edit('/articles/edit', 'Edit','modify|delete'); //shortcut to link DataEdit actions
-
-        $grid->link('/articles/edit',"Add New", "TR");  //add button
+        $grid->edit('#', 'Edit','modify|delete'); //shortcut to link DataEdit actions
+   
         $grid->orderBy('id','asc'); //default orderby
         $grid->paginate(10); //pagination
 
